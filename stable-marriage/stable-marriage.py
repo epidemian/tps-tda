@@ -61,3 +61,62 @@ def find_stable_marriages_gs(males, females, preferences):
                     males.add(old_male) # Now her old fiance is!
     return couples
 
+# OO Style...
+class Person(object):
+    def __init__(self, name, preferences):
+        self.name = name
+        self._preferences = preferences
+        self._engagement = None
+        print("Person", name, preferences)
+        
+    def is_engaged(self):
+        return bool(self._engagement)
+
+    def disengage(self):
+        if self._engagement: 
+            self._engagement._engagement = None
+            self._engagement = None
+    
+    def engage_to(self, other):
+        self.disengage()
+        other.disengage()
+        self._engagement = other
+        other._engagement = self
+
+class Female(Person):
+    def prefers(self, male):
+        return self.get_preference(male) < self.get_preference(_engagement)
+
+    def get_preference(self, male):
+        return self._preferences.index(male)
+
+class Male(Person):
+    def __init__(self, name, preferences):
+        super(Male, self).__init__(name, preferences)
+        self.clear_proposals()
+        
+    def clear_proposals(self):
+        self._proposal_count = 0
+    
+    def next_proposal(self):
+        p = self._preferences[_proposal_count]
+        _proposal_count = 1
+        return p
+
+def stable_matching(males, females):
+    # Set eveeryone to "free".
+    for m in males:
+        m.disengage()
+        m.clear_proposals()
+    
+    def get_free_male():
+        return next((m for m in males if not m.is_engaged()), None)
+    
+    while True:
+        male = get_free_male()
+        if not male:
+            break
+        female = male.next_proposal()
+        if not female.is_engaged() or female.prefers(male):
+            female.engage_to(male)
+
